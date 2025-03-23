@@ -8,8 +8,9 @@ import (
 )
 
 type Config struct {
-	BotToken   string
-	FilmsToken string
+	BotToken    string
+	FilmsToken  string
+	ChannelName string
 }
 
 func GetConfig() *Config {
@@ -18,7 +19,8 @@ func GetConfig() *Config {
 	}
 	log.Println("Config Loaded")
 	return &Config{
-		BotToken:   os.Getenv("telegram_api_token"),
-		FilmsToken: os.Getenv("kinopoisk_api_token"),
+		BotToken:    os.Getenv("telegram_api_token"),
+		FilmsToken:  os.Getenv("kinopoisk_api_token"),
+		ChannelName: os.Getenv("channel_name"),
 	}
 }

@@ -4,14 +4,16 @@ import (
 	"TelegramBot/internal/models"
 	"TelegramBot/pkg/kinopoisk"
 	"log"
-	"time"
 
 	tgBotApi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 type Films interface {
-	SaveFilmsAndTrailers([]models.Film) error
+	SaveFilmsAndTrailers([]models.Film)
 	GetFilm() (string, []byte, int, error)
+	SaveUser(user models.User)
+	SaveFilmToUserPool(film models.FilmsPool) error
+	GetUserPool(userId int64, watch string) (string, error)
 }
 
 type Handler struct {
@@ -24,35 +26,35 @@ func NewHandler(films Films, bot tgBotApi.BotAPI, api kinopoisk.KinopoiskAPI) *H
 	return &Handler{filmService: films, bot: bot, api: api}
 }
 
-func (h *Handler) InitHandler(t int64) {
+func (h *Handler) InitHandler() {
 	go func() {
-		h.postFilmToChanel()
-		time.Sleep(time.Hour * time.Duration(t))
+
+		// h.postFilmToChanel()
 	}()
 }
 
 func (h *Handler) postFilmToChanel() {
-	caption, file, NotPosted, err := h.filmService.GetFilm()
+	caption, file, sum, err := h.filmService.GetFilm()
+	if sum <= 10 {
+		// h.saveFilmsAndTrailers()
+	}
 	if err != nil {
-		log.Println("Error :", err)
+		log.Println(err)
 		return
 	}
-	if NotPosted <= 10 {
-		go h.saveFilmsAndTrailers()
-	}
-	newPhoto := tgBotApi.PhotoConfig{
-		Thumb:     tgBotApi.FileBytes{Bytes: file},
-		Caption:   caption,
-		ParseMode: "html",
-	}
-	newPhoto.ChannelUsername = "Channel Name"
+
+	newPhoto := tgBotApi.NewPhotoToChannel("@cahnel_name", tgBotApi.FileBytes{
+		Name:  "name",
+		Bytes: file,
+	})
+	newPhoto.Caption = caption
+	newPhoto.ParseMode = "html"
 	h.bot.Send(newPhoto)
 }
 
 func (h *Handler) saveFilmsAndTrailers() {
+	log.Println("Go save films")
 	films := h.api.GetStackFilms()
-	err := h.filmService.SaveFilmsAndTrailers(films)
-	if err != nil {
-		log.Println("Error : ", err)
-	}
+	h.filmService.SaveFilmsAndTrailers(films)
+
 }
