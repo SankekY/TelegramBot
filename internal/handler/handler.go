@@ -29,14 +29,14 @@ func NewHandler(films Films, bot tgBotApi.BotAPI, api kinopoisk.KinopoiskAPI) *H
 func (h *Handler) InitHandler() {
 	go func() {
 
-		// h.postFilmToChanel()
+		h.postFilmToChanel()
 	}()
 }
 
 func (h *Handler) postFilmToChanel() {
 	caption, file, sum, err := h.filmService.GetFilm()
 	if sum <= 10 {
-		// h.saveFilmsAndTrailers()
+		h.saveFilmsAndTrailers()
 	}
 	if err != nil {
 		log.Println(err)

@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type FilmsRepository interface {
@@ -68,6 +69,7 @@ func (f *Films) UserPost(filmId int) (string, []byte, error) {
 	if err != nil {
 		return "", nil, err
 	}
+	film.Genre = "share"
 	film.Trailers = f.kinopoisk.GetReqTrailers(film.KinopoiskID)
 	text := generateText(film, film.Trailers)
 	file, err := getPosterByte(film.PosterUrl)
@@ -86,7 +88,7 @@ func generateTextForUser(films []models.FilmsPool) string {
 	for _, film := range films {
 		freeUrl := fmt.Sprintf("https://r.kpfr.site/film/%d/", film.KinopoiskID)
 		text += fmt.Sprintf("<b>%s | %d</b>\n", film.Title, film.Year)
-		text += fmt.Sprintf("<b>Watch:</b> <a href='%s'>FeeWatch</a>\n<b>FilmID-->:</b> <i>%d</i>\n\n ", freeUrl, film.KinopoiskID)
+		text += fmt.Sprintf("<b>Watch:</b> <a href='%s'>FeeWatch</a>\n<b>FilmID:</b> <b>#%d</b> \n\n ", freeUrl, film.KinopoiskID)
 	}
 
 	return text
@@ -102,9 +104,15 @@ func getPosterByte(url string) ([]byte, error) {
 }
 
 func generateText(film models.Film, tralelers []models.Trailer) string {
-	text := fmt.Sprintf("%s | %s \n Год: %d | Рейтинг: %v #%s\n%s\n",
+	description := strings.Split(film.Description, " ")
+	copasity := len(description) - 1
+	if len(description) > 30 {
+		copasity = len(description) / 2
+	}
+	desc := strings.Join(description[:copasity], " ")
+	text := fmt.Sprintf("<b>%s | %s</b> \n Год: %d | Рейтинг: %v #%s\n%s...\n",
 		film.TitleRu, film.TitleOrig, film.Year, film.Rating, film.Genre,
-		film.Description,
+		desc,
 	)
 	PoiskUrl := fmt.Sprintf("https://hd.kinopoisk.ru/film/%s", film.KinopoiskHDID)
 	freeUrl := fmt.Sprintf("https://r.kpfr.site/film/%d/", film.KinopoiskID)
@@ -121,13 +129,13 @@ func generateText(film models.Film, tralelers []models.Trailer) string {
 		}
 		if v.Site == "YANDEX_DISK" {
 			if yandex == 0 {
-				text += fmt.Sprintf("Yandex: href='%s'>%s</a> \n", v.URL, v.Title)
+				text += fmt.Sprintf("Yandex: <a href='%s'>%s</a> \n", v.URL, v.Title)
 				yandex++
 			}
 		}
 	}
 	text += fmt.Sprintf("Watch: <a href='%s'>KinopoiskHD</a>\n", PoiskUrl)
 	text += fmt.Sprintf("WatchFree: <a href='%s'>Thanks</a>\n", freeUrl)
-	text += fmt.Sprintf("filmID-->: %d", film.KinopoiskID)
+	text += fmt.Sprintf("filmID: <b>#%d</b> ", film.KinopoiskID)
 	return text
 }

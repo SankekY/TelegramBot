@@ -26,7 +26,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to create bot: %v", err)
 	}
-	tgBot.Debug = true
+	tgBot.Debug = false
 
 	api := kinopoisk.NewKinopoisk(cfg.FilmsToken)
 	repo := repository.NewRepository(db)
@@ -35,6 +35,7 @@ func main() {
 	b := bot.New(tgBot, *service, api)
 	handler.InitHandler()
 	b.BotInit()
+
 	ch := make(chan int)
 	<-ch
 }
