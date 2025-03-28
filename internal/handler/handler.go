@@ -4,6 +4,7 @@ import (
 	"TelegramBot/internal/models"
 	"TelegramBot/pkg/kinopoisk"
 	"log"
+	"time"
 
 	tgBotApi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -27,10 +28,12 @@ func NewHandler(films Films, bot tgBotApi.BotAPI, api kinopoisk.KinopoiskAPI) *H
 }
 
 func (h *Handler) InitHandler() {
-	// go func() {
-
-	// 	h.postFilmToChanel()
-	// }()
+	go func() {
+		for {
+			time.Sleep(time.Hour * 3)
+			h.postFilmToChanel()
+		}
+	}()
 }
 
 func (h *Handler) postFilmToChanel() {

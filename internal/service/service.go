@@ -93,7 +93,7 @@ func generateTextForUser(films []models.FilmsPool) string {
 		freeUrl := fmt.Sprintf("https://r.kpfr.site/film/%d/", film.KinopoiskID)
 		text += fmt.Sprintf("📌<b> «%s (%d)»</b>\n", film.Title, film.Year)
 		text += fmt.Sprintf("<i>%s...</i>\n", strings.Join(disArr, " "))
-		text += fmt.Sprintf("<b>🎥 Смотреть:</b><a href='%s'>FeeWatch</a>\n<b>🆔FilmID:</b> <code>%d</code>\n\n ", freeUrl, film.KinopoiskID)
+		text += fmt.Sprintf("<b>🎥 Смотреть:</b> <a href='%s'>FeeWatch</a>\n<b>🆔FilmID:</b> <code>%d</code>\n\n ", freeUrl, film.KinopoiskID)
 	}
 	text += "🎉 Приятного просмотра! 🍿✨"
 	return text

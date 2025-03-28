@@ -35,7 +35,7 @@ func (k *KinopoiskAPI) GetStackFilms() []models.Film {
 	FilmsStack := k.getReqStakFilms(TOP_LIST[indexTop])
 	indexTop += 1
 	log.Println("FilmsStack")
-	for _, film := range FilmsStack[:15] {
+	for _, film := range FilmsStack {
 		filmInfo, err := k.GetFullInfoByID(film.KinopoiskID)
 		log.Println("Film info get ")
 		if err != nil {
