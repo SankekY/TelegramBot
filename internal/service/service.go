@@ -84,13 +84,18 @@ func (f *Films) DeleteFilmUserPool(filmId int, userId int64) error {
 }
 
 func generateTextForUser(films []models.FilmsPool) string {
-	text := "Ваша библеотека фильмов! \n\n"
+	text := "🎬<b> Ваша киноколлекция </b>🍿\n\n"
 	for _, film := range films {
+		disArr := strings.Split(film.Description, " ")
+		if len(disArr) > 20 {
+			disArr = disArr[:20]
+		}
 		freeUrl := fmt.Sprintf("https://r.kpfr.site/film/%d/", film.KinopoiskID)
-		text += fmt.Sprintf("<b>%s | %d</b>\n", film.Title, film.Year)
-		text += fmt.Sprintf("<b>Watch:</b> <a href='%s'>FeeWatch</a>\n<b>FilmID:</b> <b>#%d</b> \n\n ", freeUrl, film.KinopoiskID)
+		text += fmt.Sprintf("📌<b> «%s (%d)»</b>\n", film.Title, film.Year)
+		text += fmt.Sprintf("<i>%s...</i>\n", strings.Join(disArr, " "))
+		text += fmt.Sprintf("<b>🎥 Смотреть:</b><a href='%s'>FeeWatch</a>\n<b>🆔FilmID:</b> <code>%d</code>\n\n ", freeUrl, film.KinopoiskID)
 	}
-
+	text += "🎉 Приятного просмотра! 🍿✨"
 	return text
 }
 
@@ -136,6 +141,6 @@ func generateText(film models.Film, tralelers []models.Trailer) string {
 	}
 	text += fmt.Sprintf("Watch: <a href='%s'>KinopoiskHD</a>\n", PoiskUrl)
 	text += fmt.Sprintf("WatchFree: <a href='%s'>Thanks</a>\n", freeUrl)
-	text += fmt.Sprintf("filmID: <b>#%d</b> ", film.KinopoiskID)
+	text += fmt.Sprintf("filmID: <code>%d</code> ", film.KinopoiskID)
 	return text
 }

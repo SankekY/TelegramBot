@@ -1,3 +1,6 @@
 .env
 selects
 .qodo
+.FilmsBook.db
+.FilmsBook.sqlpro
+

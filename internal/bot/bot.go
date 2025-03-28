@@ -18,6 +18,23 @@ type tgBot struct {
 	api         *kinopoisk.KinopoiskAPI
 }
 
+var msgStart = `✨ Команды бота ✨  
+
+🎬 Добавить фильм  
+/add film_id – добавь фильм в избранное  
+
+🗑 Удалить фильм  
+/del film_id – удали фильм из избранного  
+
+📋 Мои фильмы  
+/my – посмотри свой список избранного  
+
+📢 Опубликовать в канал  
+/post film_id – отправь фильм в канал  
+
+🙏 NAMASTE  
+*Меньше чем три...* 💫`
+
 func New(bot *tgBotApi.BotAPI, films service.Films, api *kinopoisk.KinopoiskAPI) *tgBot {
 	return &tgBot{bot: bot, filmService: films, api: api}
 }
@@ -105,7 +122,7 @@ func (t *tgBot) BotInit() {
 					ChatID:   u.Message.Chat.ID,
 					UserName: u.Message.From.UserName,
 				})
-				msg.Text = "Комманд лист\nДля добавление фильма:\n /add film_id\n Для удаление фильма: /del film_id\n Для просмотра избранных: /my\nДля отправки фильма в канал: /post film_id \n NAMASTE: Меньше чем три )"
+				msg.Text = msgStart
 				t.bot.Send(msg)
 			case "/my":
 				text, err := t.filmService.GetUserPool(

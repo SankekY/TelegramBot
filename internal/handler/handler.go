@@ -27,10 +27,10 @@ func NewHandler(films Films, bot tgBotApi.BotAPI, api kinopoisk.KinopoiskAPI) *H
 }
 
 func (h *Handler) InitHandler() {
-	go func() {
+	// go func() {
 
-		h.postFilmToChanel()
-	}()
+	// 	h.postFilmToChanel()
+	// }()
 }
 
 func (h *Handler) postFilmToChanel() {
